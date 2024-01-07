@@ -58,7 +58,7 @@ def main(
     verbose: bool = True,
     is_lora: bool = True,
     lora_rank: int = 32,
-    optimizer: str = "adamw",
+    optimizer: str = "prodigy",
 ) -> None:
     if allow_tf32:
         torch.backends.cuda.matmul.allow_tf32 = True
