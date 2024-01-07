@@ -119,6 +119,11 @@ def train(
         default="infer",
         choices=["zip", "tar", "infer"],
     ),
+    optimizer: str = Input(
+        description="Optimizer to use for training",
+        default="adamW",
+        choices=["AdamW", "prodigy"]
+    ),
 ) -> TrainingOutput:
     # Hard-code token_map for now. Make it configurable once we support multiple concepts or user-uploaded caption csv.
     token_map = token_string + ":2"
@@ -183,6 +188,7 @@ def train(
         device="cuda:0",
         lora_rank=lora_rank,
         is_lora=is_lora,
+        optimizer=optimizer,
     )
 
     directory = Path(OUTPUT_DIR)
