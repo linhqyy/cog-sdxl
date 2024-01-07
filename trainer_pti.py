@@ -193,6 +193,7 @@ def main(
             params_to_optimize,
             weight_decay=1e-4,
         )
+        print("Using AdamW optimizer")
     elif optimizer.lower() == "prodigy":
         try:
             import prodigyopt
