@@ -55,11 +55,11 @@ def train(
     ),
     unet_learning_rate: float = Input(
         description="Learning rate for the U-Net. We recommend this value to be somewhere between `1e-6` to `1e-5`.",
-        default=1e-6,
+        default=1.0,
     ),
     ti_lr: float = Input(
         description="Scaling of learning rate for training textual inversion embeddings. Don't alter unless you know what you're doing.",
-        default=3e-4,
+        default=1.0,
     ),
     lora_lr: float = Input(
         description="Scaling of learning rate for training LoRA embeddings. Don't alter unless you know what you're doing.",
@@ -121,7 +121,7 @@ def train(
     ),
     optimizer: str = Input(
         description="Optimizer to use for training",
-        default="adamW",
+        default="prodigy",
         choices=["AdamW", "prodigy"]
     ),
 ) -> TrainingOutput:
