@@ -13,7 +13,7 @@ build:
     - "wget"
   python_packages:
     - "diffusers"
-    - "torch"
+    - "torch==2.0.1"
     - "transformers"
     - "invisible-watermark==0.2.0"
     - "accelerate"
@@ -25,8 +25,7 @@ build:
     - "mediapipe==0.10.2"
     - "prodigyopt"
     - "bitsandbytes"
-    - "dadaptation"
-
+    
 
   run:
     - curl -o /usr/local/bin/pget -L "https://github.com/replicate/pget/releases/download/v0.0.3/pget" && chmod +x /usr/local/bin/pget
