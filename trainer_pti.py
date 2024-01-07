@@ -39,8 +39,8 @@ def main(
     max_train_steps: Optional[int] = None,
     checkpointing_steps: int = 500000,  # default to no checkpoints
     gradient_accumulation_steps: int = 1,  # todo
-    unet_learning_rate: float = 1e-5,
-    ti_lr: float = 3e-4,
+    unet_learning_rate: float = 1.0,
+    ti_lr: float = 1.0,
     lora_lr: float = 1e-4,
     pivot_halfway: bool = True,
     scale_lr: bool = False,
