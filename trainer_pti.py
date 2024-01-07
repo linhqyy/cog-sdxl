@@ -58,6 +58,7 @@ def main(
     verbose: bool = True,
     is_lora: bool = True,
     lora_rank: int = 32,
+    optimizer: str = "adamw",
 ) -> None:
     if allow_tf32:
         torch.backends.cuda.matmul.allow_tf32 = True
@@ -187,11 +188,24 @@ def main(
                 "weight_decay": 1e-3,
             },
         ]
-
-    optimizer = torch.optim.AdamW(
-        params_to_optimize,
-        weight_decay=1e-4,
-    )
+    if optimizer.lower() == "adamw":
+        optimizer = torch.optim.AdamW(
+            params_to_optimize,
+            weight_decay=1e-4,
+        )
+    elif optimizer.lower() == "prodigy":
+        try:
+            import prodigyopt
+        except ImportError:
+            raise ImportError(
+                "Prodigy optimizer is not installed. Install with `pip install prodigyopt`."
+            )
+        optimizer = prodigyopt.Prodigy(
+            params_to_optimize,
+            weight_decay=1e-4,
+        )
+        print("Using prodigy optimizer")
+        
 
     print(f"# PTI : Loading dataset, do_cache {do_cache}")
 
