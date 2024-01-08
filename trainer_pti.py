@@ -188,24 +188,24 @@ def main(
                 "weight_decay": 1e-3,
             },
         ]
-    # if optimizer.lower() == "adamw":
-    #     optimizer = torch.optim.AdamW(
-    #         params_to_optimize,
-    #         weight_decay=1e-4,
-    #     )
-    #     print("Using AdamW optimizer")
-    if optimizer.lower() == "prodigy":
+    if optimizer.lower() == "adamw":
+        optimizer = torch.optim.AdamW(
+            params_to_optimize,
+            weight_decay=1e-4,
+        )
+        print("Using AdamW optimizer")
+    elif optimizer.lower() == "prodigy":
         try:
             import prodigyopt
         except ImportError:
             raise ImportError(
                 "Prodigy optimizer is not installed. Install with `pip install prodigyopt`."
             )
-    optimizer = prodigyopt.Prodigy(
-        params_to_optimize,
-        weight_decay=1e-4,
-    )
-    print("Using prodigy optimizer")
+        optimizer = prodigyopt.Prodigy(
+            params_to_optimize,
+            weight_decay=1e-4,
+        )
+        print("Using prodigy optimizer")
     
 
     print(f"# PTI : Loading dataset, do_cache {do_cache}")
