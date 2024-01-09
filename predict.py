@@ -167,11 +167,11 @@ class Predictor(BasePredictor):
         self.weights_cache = WeightsDownloadCache()
 
         print("Loading safety checker...")
-        if not os.path.exists(SAFETY_CACHE):
-            download_weights(SAFETY_URL, SAFETY_CACHE)
-        self.safety_checker = StableDiffusionSafetyChecker.from_pretrained(
-            SAFETY_CACHE, torch_dtype=torch.float16
-        ).to("cuda")
+        # if not os.path.exists(SAFETY_CACHE):
+        #     download_weights(SAFETY_URL, SAFETY_CACHE)
+        # self.safety_checker = StableDiffusionSafetyChecker.from_pretrained(
+        #     SAFETY_CACHE, torch_dtype=torch.float16
+        # ).to("cuda")
         self.feature_extractor = CLIPImageProcessor.from_pretrained(FEATURE_EXTRACTOR)
 
         if not os.path.exists(SDXL_MODEL_CACHE):
@@ -240,16 +240,16 @@ class Predictor(BasePredictor):
         shutil.copyfile(path, "/tmp/image.png")
         return load_image("/tmp/image.png").convert("RGB")
 
-    def run_safety_checker(self, image):
-        safety_checker_input = self.feature_extractor(image, return_tensors="pt").to(
-            "cuda"
-        )
-        np_image = [np.array(val) for val in image]
-        image, has_nsfw_concept = self.safety_checker(
-            images=np_image,
-            clip_input=safety_checker_input.pixel_values.to(torch.float16),
-        )
-        return image, has_nsfw_concept
+    # def run_safety_checker(self, image):
+    #     safety_checker_input = self.feature_extractor(image, return_tensors="pt").to(
+    #         "cuda"
+    #     )
+    #     np_image = [np.array(val) for val in image]
+    #     image, has_nsfw_concept = self.safety_checker(
+    #         images=np_image,
+    #         clip_input=safety_checker_input.pixel_values.to(torch.float16),
+    #     )
+    #     return image, has_nsfw_concept
 
     @torch.inference_mode()
     def predict(
@@ -337,11 +337,6 @@ class Predictor(BasePredictor):
             description="Disable safety checker for generated images. This feature is only available through the API. See [https://replicate.com/docs/how-does-replicate-work#safety](https://replicate.com/docs/how-does-replicate-work#safety)",
             default=False
         ),
-        optimizer: str = Input(
-            description="Optimizer to use for training",
-            default="adam",
-            choices=["adam", "prodigy"]
-        ),
     ) -> List[Path]:
         """Run a single prediction on the model."""
         if seed is None:
@@ -424,22 +419,22 @@ class Predictor(BasePredictor):
             pipe.watermark = watermark_cache
             self.refiner.watermark = watermark_cache
 
-        if not disable_safety_checker:
-            _, has_nsfw_content = self.run_safety_checker(output.images)
+        # if not disable_safety_checker:
+        #     _, has_nsfw_content = self.run_safety_checker(output.images)
 
         output_paths = []
         for i, image in enumerate(output.images):
-            if not disable_safety_checker:
-                if has_nsfw_content[i]:
-                    print(f"NSFW content detected in image {i}")
-                    continue
+            # if not disable_safety_checker:
+            #     if has_nsfw_content[i]:
+            #         print(f"NSFW content detected in image {i}")
+            #         continue
             output_path = f"/tmp/out-{i}.png"
             image.save(output_path)
             output_paths.append(Path(output_path))
 
-        if len(output_paths) == 0:
-            raise Exception(
-                f"NSFW content detected. Try running it again, or try a different prompt."
-            )
+        # if len(output_paths) == 0:
+        #     raise Exception(
+        #         f"NSFW content detected. Try running it again, or try a different prompt."
+        #     )
 
         return output_paths
